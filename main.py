@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import pydot
 import get_content.py
+import matplotlib.pyplot as plt
 
 
 base_url = 'https://en.wikipedia.org'
@@ -11,8 +12,9 @@ page = requests.get(base_url + Starting_url)
 soup = BeautifulSoup(page.text, 'html.parser')
 
 grp = pydot.Dot(graph_name='stats', graph_type='digraph')
+grp2=nx.Graph()
 
-sublink1, nodelist1 = get_content(soup, None)
+sublink1, nodelist1 = get_content2(soup, None)
 
 for li in sublink1:
     for l in li:
@@ -29,7 +31,7 @@ for li in sublink1:
 
                         link = l['href']
                         link = link[1:]
-                        make_graph(node_list, link, node_2)
+                        make_graph2(node_list, link, node_2)
                         content = next_soup.find(id=link).parent
                         content = content.find_next_sibling()
                         content_sublink = content.find_all('a')
@@ -37,4 +39,5 @@ for li in sublink1:
         except:
             break
         
-grp.write_png('wiki_grp.png')
+nx.draw_circular(grp2)
+plt.savefig("simple_path.png")
